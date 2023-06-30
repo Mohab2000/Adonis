@@ -1,10 +1,18 @@
 import Route from "@ioc:Adonis/Core/Route";
+import Database from "@ioc:Adonis/Lucid/Database";
 
 Route.get("/", async ({ view }) => {
   return view.render("welcome");
 });
 
-Route.on("/news").render("news.view").as("news.view");
+Route.get("/news", async ({ view }) => {
+  //fetch data from db
+  const articles = await Database.query() // 👈 gives an instance of select query builder
+    .from("articles")
+    .select("*");
+  // console.log(articles);
+  return view.render("news.view", { articles });
+}).as("news_view");
 
 Route.post("/news", ({ response }) => {
   // const { email, password } = request.body();
